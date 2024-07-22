@@ -1,4 +1,4 @@
-package com.cyrus822.demo.workload_identity.models;
+package com.matt.test.workload_identity.models;
 
 import java.io.Serializable;
 import jakarta.persistence.Entity;

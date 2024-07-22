@@ -1,4 +1,4 @@
-package com.cyrus822.demo.workload_identity;
+package com.matt.test.workload_identity;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -8,7 +8,7 @@
 		<version>3.2.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.cyrus822.demo</groupId>
+	<groupId>com.matt.demo</groupId>
 	<artifactId>workload-identity</artifactId>
 	<version>1.0</version>
 	<name>workload-identity</name>

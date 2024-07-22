@@ -1,11 +1,10 @@
-package com.cyrus822.demo.workload_identity.utils;
+package com.matt.test.workload_identity.utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import com.azure.core.credential.TokenCredential;
 import com.azure.core.util.BinaryData;
 import com.azure.identity.ClientSecretCredentialBuilder;
