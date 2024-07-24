@@ -1,21 +1,40 @@
 spring:
-    profiles:
-        active: local
     application:
         name: workload-identity
-#    cloud:
-#        azure:
-#            credential:
-#                managed-identity-enabled: true
-#                client-id: ${asbspn}
-#            servicebus:
-#                namespace: ${asbns:wi-demo-asb}.servicebus.windows.net
-#                credential:
-#                    managed-identity-enabled: true
-#                    client-id: ${asbspn}
-#                    client-secret:
-#                profile:
-#                    tenant-id: ${tenantId}
+    cloud:
+        azure:
+            profile:
+                subscription-id: 39fd1f31-77d1-4c2b-a803-ac0060bd267b
+                tenant-id: 0044550f-19ec-4c35-9c61-994af34191fe
+            credential:
+                managed-identity-enabled: true
+                client-id: 726e2f44-b628-44c8-b726-720c29886427
+#                client-secret: KIU8Q~PXuoNqikHfzLVncmRtOOA78.Ul3pdhTcrT
+            servicebus:
+                namespace: m01asb
+                resource:
+                    resource-group: matt_learn
+        function:
+            definition: consume;supply;
+        stream:
+            bindings:
+                consume-in-0:
+                    destination: testqueue
+                supply-out-0:
+                    destination: testqueue
+            poller:
+                fixed-delay: 60000
+                initial-delay: 0
+            servicebus:
+                bindings:
+                    consume-in-0:
+                        consumer:
+                            auto-complete: false
+                            entity-type: queue
+                    supply-out-0:
+                        producer:
+                            entity-type: queue
+
     datasource:
         url: jdbc:sqlserver://${dbsvr:m01sqlserver}.database.windows.net:1433;database=${db:mySampleDatabase};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;Authentication=ActiveDirectoryManagedIdentity;user=${dbspn}
         driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
