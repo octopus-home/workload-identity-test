@@ -9,7 +9,6 @@ spring:
             credential:
                 managed-identity-enabled: true
                 client-id: 726e2f44-b628-44c8-b726-720c29886427
-#                client-secret: KIU8Q~PXuoNqikHfzLVncmRtOOA78.Ul3pdhTcrT
             servicebus:
                 namespace: m01asb
                 resource:
