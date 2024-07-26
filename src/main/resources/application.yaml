@@ -1,55 +1,4 @@
-#spring:
-#    application:
-#        name: workload-identity
-#    cloud:
-#        azure:
-#            profile:
-#                subscription-id: 39fd1f31-77d1-4c2b-a803-ac0060bd267b
-#                tenant-id: 0044550f-19ec-4c35-9c61-994af34191fe
-#            credential:
-#                managed-identity-enabled: true
-#                client-id: 726e2f44-b628-44c8-b726-720c29886427
-#            servicebus:
-#                namespace: m01asb
-#                resource:
-#                    resource-group: matt_learn
-#        function:
-#            definition: consume;supply;
-#        stream:
-#            bindings:
-#                consume-in-0:
-#                    destination: testqueue
-#                supply-out-0:
-#                    destination: testqueue
-#            poller:
-#                fixed-delay: 60000
-#                initial-delay: 0
-#            servicebus:
-#                bindings:
-#                    consume-in-0:
-#                        consumer:
-#                            auto-complete: false
-#                            entity-type: queue
-#                    supply-out-0:
-#                        producer:
-#                            entity-type: queue
-#
-#    datasource:
-#        url: jdbc:sqlserver://${dbsvr:m01sqlserver}.database.windows.net:1433;database=${db:mySampleDatabase};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;Authentication=ActiveDirectoryManagedIdentity;user=${dbspn}
-#        driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-#        azure:
-#            passwordless-enabled: true
-#    jpa:
-#        database-platform: org.hibernate.dialect.SQLServerDialect
-#        hibernate:
-#            ddl-auto: update
-#asb:
-#  entity:
-#    name: ${asbQ:testQueue}
-#appConfig:
-#    asb:
-#        sleepTime: 3
-#    auth: wi #wi, wi-spn, spn
+
 spring:
     application:
         name: workload-identity
@@ -58,10 +7,13 @@ spring:
             profile:
                 tenant-id: 0044550f-19ec-4c35-9c61-994af34191fe
             credential:
+                # when use workload identity must use set below config to true
+                managed-identity-enabled: true
                 client-id: 726e2f44-b628-44c8-b726-720c29886427
-                client-secret: {your client secret}
+                # when use aad credential login, remove below comment
+#                client-secret: {your credential}
             storage:
                 blob:
-                    account-name: m02storageaccount
-                    endpoint: https://m02storageaccount.blob.core.windows.net/
+                    account-name: {your storage account}
+                    endpoint: https://{your storage account}.blob.core.windows.net/
 

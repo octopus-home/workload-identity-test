@@ -38,19 +38,6 @@ public class StorageController {
 
     @GetMapping("/hello/{msg}")
     public String hello(@PathVariable("msg") String msg) {
-        BlobContainerClient blobContainerClient = blobServiceClient.getBlobContainerClient(containerName);
-        BlockBlobClient blockBlobClient = blobContainerClient.getBlobClient(msg).getBlockBlobClient();
-
-        String content = "hello world! " + msg;
-
-        try (ByteArrayInputStream dataStream = new ByteArrayInputStream(content.getBytes())) {
-            BlockBlobSimpleUploadOptions options = new BlockBlobSimpleUploadOptions(dataStream,
-                    content.length()).setMetadata(Map.of("application_id", "123456")).setTags(Map.of("user_id", "hk_user"));
-            blockBlobClient.uploadWithResponse(options, Duration.ofSeconds(30L), Context.NONE);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
         return "hello " + msg;
     }
 
@@ -63,10 +50,23 @@ public class StorageController {
     @PostMapping("/{fileName}")
     public String writeResource(@PathVariable("fileName") String fileName, @RequestBody String data) throws IOException {
 
-        Resource resource = resourceLoader.getResource(String.format(BLOB_RESOURCE_PATTERN, this.containerName, fileName));
-        try (OutputStream os = ((WritableResource) resource).getOutputStream()) {
-            os.write(data.getBytes());
+//        Resource resource = resourceLoader.getResource(String.format(BLOB_RESOURCE_PATTERN, this.containerName, fileName));
+//        try (OutputStream os = ((WritableResource) resource).getOutputStream()) {
+//            os.write(data.getBytes());
+//        }
+        BlobContainerClient blobContainerClient = blobServiceClient.getBlobContainerClient(containerName);
+        BlockBlobClient blockBlobClient = blobContainerClient.getBlobClient(fileName).getBlockBlobClient();
+
+        String content = "hello world! " + data;
+
+        try (ByteArrayInputStream dataStream = new ByteArrayInputStream(content.getBytes())) {
+            BlockBlobSimpleUploadOptions options = new BlockBlobSimpleUploadOptions(dataStream,
+                    content.length()).setMetadata(Map.of("application_id", "123456")).setTags(Map.of("user_id", "hk_user"));
+            blockBlobClient.uploadWithResponse(options, Duration.ofSeconds(30L), Context.NONE);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-        return "blob was updated";
+
+        return "blob was uploaded";
     }
 }
