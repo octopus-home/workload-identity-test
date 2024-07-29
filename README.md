@@ -13,7 +13,7 @@ used command as below
 az aks create --resource-group=matt_learn --name=m01akscluster --attach-acr m01registry --dns-name-prefix=m01aksclusterkubernetes --generate-ssh-keys
 az aks show -g matt_learn -n m01akscluster
 az aks get-credentials --resource-group=matt_learn --name=m01akscluster
-
+az aks show --name m01akscluster --resource-group matt_learn --query "oidcIssuerProfile.issuerUrl" --output tsv
 
 kubectl run workload-identity-docker --image=m01registry.azurecr.io/workload-identity:v0
 
@@ -23,7 +23,7 @@ kubectl expose pod workload-identity-docker --type=LoadBalancer --port=80 --targ
 networkWatchers
 az group deployment list --resource-group NetworkWatcherRG --query "[?properties.targetResourceGroup=='NetworkWatcherRG'].{Name:name, Timestamp:properties.timestamp}"
 
-az acr login --name m01registry --resource-group matt_learn
+az acr login --name m02registry --resource-group matt_learn
 az acr repository delete --name m01registry --image workload-identity
 
 docker build -t m01registry.azurecr.io/workload-identity .
@@ -38,7 +38,7 @@ kubectl patch pod workload-identity-spn -p '{"metadata":{"labels":{"azure.worklo
 
 
 
-https://eastasia.oic.prod-aks.azure.com/0044550f-19ec-4c35-9c61-994af34191fe/6fb7205b-48c0-43be-a9e0-228275e67bbb/
+https://eastasia.oic.prod-aks.azure.com/186a3027-ecbc-40e9-8bd6-2ccdcbc15e61/af348259-75ec-4d77-9724-e0248827182c/
 
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -74,6 +74,8 @@ kubectl expose pod workload-identity-spn --type=LoadBalancer --port=80 --target-
 "metadata":{"annotations":{},"labels":{"azure.workload.identity/use":"true"},"name":"workload-identity-spn","namespace":"default"}
 
 kubectl exec -it workload-identity --namespace=default -- /bin/bash
+
+/var/run/secrets/azure/tokens
 ```
 other
 ---
