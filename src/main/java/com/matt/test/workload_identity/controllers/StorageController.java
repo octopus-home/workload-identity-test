@@ -1,8 +1,8 @@
 package com.matt.test.workload_identity.controllers;
 
-import com.azure.core.util.BinaryData;
 import com.azure.core.util.Context;
 import com.azure.spring.cloud.core.resource.AzureStorageBlobProtocolResolver;
+import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.options.BlockBlobSimpleUploadOptions;
@@ -11,13 +11,12 @@ import com.matt.test.workload_identity.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.WritableResource;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.Map;
@@ -25,7 +24,7 @@ import java.util.Map;
 @RestController
 public class StorageController {
     static final String BLOB_RESOURCE_PATTERN = "azure-blob://%s/%s";
-    static final String containerName = "ftpcontainer";
+    static final String containerName = "container1";
 
     @Autowired
     private ResourceLoader resourceLoader;
@@ -43,9 +42,16 @@ public class StorageController {
 
     @GetMapping("/{fileName}")
     public String readResource(@PathVariable("fileName") String fileName) throws IOException {
-        Resource resource = resourceLoader.getResource(String.format(BLOB_RESOURCE_PATTERN, containerName, fileName));
-        return StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
-    }
+        BlobContainerClient blobContainerClient = blobServiceClient.getBlobContainerClient(containerName);
+        BlobClient blobClient = blobContainerClient.getBlobClient(fileName);
+        String fileContent = null;
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            blobClient.downloadStream(outputStream);
+            fileContent = StreamUtils.copyToString(outputStream, Charset.defaultCharset());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileContent;  }
 
     @PostMapping("/{fileName}")
     public String writeResource(@PathVariable("fileName") String fileName, @RequestBody String data) throws IOException {

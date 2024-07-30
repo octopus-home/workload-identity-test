@@ -1,19 +1,18 @@
-
 spring:
-    application:
-        name: workload-identity
-    cloud:
-        azure:
-            profile:
-                tenant-id: 0044550f-19ec-4c35-9c61-994af34191fe
-            credential:
-                # when use workload identity must use set below config to true
-                managed-identity-enabled: true
-                client-id: 726e2f44-b628-44c8-b726-720c29886427
-                # when use aad credential login, remove below comment
-#                client-secret: {your credential}
-            storage:
-                blob:
-                    account-name: {your storage account}
-                    endpoint: https://{your storage account}.blob.core.windows.net/
+  application:
+    name: workload-identity
+  cloud:
+    azure:
+      profile:
+        tenant-id: 186a3027-ecbc-40e9-8bd6-2ccdcbc15e61
+        # when use aad credential login, remove below comment
+      #                client-secret: {your credential}
+      storage:
+        blob:
+          account-name: {your storage account}
+          endpoint: https://{your storage account}.blob.core.windows.net/
+          credential:
+            # when use workload identity must use set below config to true
+            managed-identity-enabled: true
+            client-id: 580c9d1d-a8d1-4ffa-8d75-610807bc6240
 
