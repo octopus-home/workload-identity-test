@@ -1,18 +1,12 @@
 spring:
   application:
     name: workload-identity
-  cloud:
-    azure:
-      profile:
-        tenant-id: 186a3027-ecbc-40e9-8bd6-2ccdcbc15e61
-        # when use aad credential login, remove below comment
-      #                client-secret: {your credential}
-      storage:
-        blob:
-          account-name: {your storage account}
-          endpoint: https://{your storage account}.blob.core.windows.net/
-          credential:
-            # when use workload identity must use set below config to true
-            managed-identity-enabled: true
-            client-id: 580c9d1d-a8d1-4ffa-8d75-610807bc6240
-
+  data:
+    redis:
+      host: m01.redis.cache.windows.net
+      port: 6380
+      username: 3ee2508b-b06f-4e6a-8fba-4e246b147357
+      azure:
+        passwordless-enabled: true
+      ssl:
+        enabled: true
