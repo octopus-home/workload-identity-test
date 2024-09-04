@@ -5,8 +5,20 @@ spring:
     redis:
       host: m01.redis.cache.windows.net
       port: 6380
-      username: 3ee2508b-b06f-4e6a-8fba-4e246b147357
       azure:
         passwordless-enabled: true
       ssl:
         enabled: true
+      username: 3ee2508b-b06f-4e6a-8fba-4e246b147357
+  cloud:
+    azure:
+      credential:
+        client-id: dc83fab2-4763-4d94-a863-b898daf0ffb1
+
+debug: true
+
+logging:
+  level:
+    com:
+      microsoft: debug
+      azure: debug
