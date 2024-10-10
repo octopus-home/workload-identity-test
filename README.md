@@ -47,7 +47,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    azure.workload.identity/client-id: 726e2f44-b628-44c8-b726-720c29886427
+    azure.workload.identity/client-id: dc83fab2-4763-4d94-a863-b898daf0ffb0
   name: workload-identity-sa
   namespace: default
 EOF

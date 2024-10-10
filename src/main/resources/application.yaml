@@ -9,11 +9,6 @@ spring:
         passwordless-enabled: true
       ssl:
         enabled: true
-      username: 3ee2508b-b06f-4e6a-8fba-4e246b147357
-  cloud:
-    azure:
-      credential:
-        client-id: dc83fab2-4763-4d94-a863-b898daf0ffb1
 
 debug: true
 
