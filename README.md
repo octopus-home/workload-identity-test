@@ -11,10 +11,16 @@ After git clone this repo, <span style='color: red;'><b>change the MySQL passwor
 script
 ---
 ```
+az login --tenant 3b3079ee-db4e-4a06-8af0-a71bc0abb502
+az account get-access-token --resource https://servicebus.azure.net
+
 az aks create --resource-group=matt_learn --name=m01akscluster --attach-acr m01registry --dns-name-prefix=m01aksclusterkubernetes --generate-ssh-keys
 az aks show -g matt_learn -n m01akscluster
 az aks get-credentials --resource-group=matt_learn --name=m01akscluster
+az aks update  --resource-group matt_learn --name m01akscluster --enable-oidc-issuer --enable-workload-identity
+az aks show --name m01akscluster --resource-group matt_learn  --query oidcIssuerProfile.issuerUrl  --output tsv
 
+kubectl run workload-identity-redis--image=m01registry.azurecr.io/workload-identity:v0
 
 kubectl run workload-identity-docker --image=m01registry.azurecr.io/workload-identity:v0
 

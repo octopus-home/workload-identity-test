@@ -24,24 +24,24 @@ public class WIDemoController {
     @Autowired
     private ASBHandler asbHandler;
 
-    @Autowired
-    private WiDemoRepo repo;
+//    @Autowired
+//    private WiDemoRepo repo;
 
     @Autowired
     private Environment environment;
 
-    @GetMapping("/sendAsb/{msg}")
+    @GetMapping("/azureASB/{msg}")
     public String sendAsb(@PathVariable("msg") String msg) {
         return asbHandler.sendASBMsg(msg);
     }
 
     @GetMapping("/saveToDB/{msg}")
     public String saveToDB(@PathVariable("msg") String msg) {
-        try {
-            repo.save(new WiDemo(0, msg));
-        } catch (Exception e) {
-            return String.format("Error in WIDemoController::saveToDB()::%s", e.getMessage());
-        }
+//        try {
+//            repo.save(new WiDemo(0, msg));
+//        } catch (Exception e) {
+//            return String.format("Error in WIDemoController::saveToDB()::%s", e.getMessage());
+//        }
         return "Success save to DB";
     }
 
@@ -67,7 +67,7 @@ public class WIDemoController {
     @Autowired
     private Sinks.Many<Message<String>> many;
 
-    @GetMapping("/messages")
+    @GetMapping("/springCloudASB")
     public ResponseEntity<String> sendMessage(@RequestParam String message) {
         log.info("Going to add message {} to Sinks.Many.", message);
         many.emitNext(MessageBuilder.withPayload(message).build(), Sinks.EmitFailureHandler.FAIL_FAST);

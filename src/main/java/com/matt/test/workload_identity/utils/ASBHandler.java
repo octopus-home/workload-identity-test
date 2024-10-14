@@ -1,8 +1,7 @@
 package com.matt.test.workload_identity.utils;
 
 import com.azure.core.credential.TokenCredential;
-import com.azure.core.util.BinaryData;
-import com.azure.identity.WorkloadIdentityCredentialBuilder;
+import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusMessage;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
@@ -22,7 +21,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.azure.spring.messaging.AzureHeaders.CHECKPOINTER;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class ASBHandler {
@@ -36,48 +34,30 @@ public class ASBHandler {
     private String namespace;
 
     @Value("${asb.entity.name}")
-    private String topic;
+    private String queueName;
 
 
     private TokenCredential credential;
 
     public String sendASBMsg(String msg) {
+        ServiceBusSenderClient sender = null;
         try {
-            //Step-1 : prepare the TokenCredential
+            TokenCredential credential = new DefaultAzureCredentialBuilder().workloadIdentityClientId(clientId).build();
 
-            LOGGER.info("[Start::ASBHandler::run()::Step-1::prepare the WorkloadIdentityCredentialBuilder]");
-            credential = new WorkloadIdentityCredentialBuilder()
-                    .clientId(clientId)
-                    .build();
-
-
-            //Step-2 : prepare the ServiceBusSenderClient
-            LOGGER.info("[Start::ASBHandler::run()::Step-2::prepare the ServiceBusSenderClient]");
-            ServiceBusSenderClient client = new ServiceBusClientBuilder()
-                    .credential(namespace, credential)
+            sender = new ServiceBusClientBuilder()
+                    .credential(namespace + ".servicebus.windows.net", credential)
                     .sender()
-                    .topicName(topic)
+                    .queueName(queueName)
                     .buildClient();
 
-            //Step-3 : Format the string input
-            LOGGER.info("[Start::ASBHandler::run()::Step-3::Format the string input]");
-            String input = formatString(msg);
+            sender.sendMessage(new ServiceBusMessage(msg));
 
-            //Step-4 : prepare the ServiceBusMessage
-            LOGGER.info("[Start::ASBHandler::run()::Step-4::prepare the ServiceBusMessage]");
-            ServiceBusMessage asbMsg = new ServiceBusMessage(BinaryData.fromBytes(input.getBytes(UTF_8)));
-
-            //Step-5 : send out the message
-            LOGGER.info("[Start::ASBHandler::run()::Step-5::send out the message]");
-            client.sendMessage(asbMsg);
-
-            //Step-6 : close the client
-            LOGGER.info("[Start::ASBHandler::run()::Step-6::close the client]");
-            client.close();
         } catch (Exception e) {
             String errMsg = String.format("Error in ASBHandler::run()::", e.getMessage());
             LOGGER.error(errMsg, e);
             return errMsg;
+        } finally {
+            sender.close();
         }
         return "Send success";
     }
@@ -88,11 +68,12 @@ public class ASBHandler {
     }
 
     private int i = 0;
+
     @Bean
     public Consumer<Message<String>> consume() {
         return message -> {
             Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-            LOGGER.info("New message received: '{}'", message.getPayload());
+            LOGGER.info("New message received: ====================================================> '{}'", message.getPayload());
             checkpointer.success()
                     .doOnSuccess(s -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                     .doOnError(e -> LOGGER.error("Error found", e))
