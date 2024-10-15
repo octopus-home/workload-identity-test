@@ -24,8 +24,8 @@ public class WIDemoController {
     @Autowired
     private ASBHandler asbHandler;
 
-//    @Autowired
-//    private WiDemoRepo repo;
+    @Autowired
+    private WiDemoRepo repo;
 
     @Autowired
     private Environment environment;
@@ -37,11 +37,11 @@ public class WIDemoController {
 
     @GetMapping("/saveToDB/{msg}")
     public String saveToDB(@PathVariable("msg") String msg) {
-//        try {
-//            repo.save(new WiDemo(0, msg));
-//        } catch (Exception e) {
-//            return String.format("Error in WIDemoController::saveToDB()::%s", e.getMessage());
-//        }
+        try {
+            repo.save(new WiDemo(0, msg));
+        } catch (Exception e) {
+            return String.format("Error in WIDemoController::saveToDB()::%s", e.getMessage());
+        }
         return "Success save to DB";
     }
 
