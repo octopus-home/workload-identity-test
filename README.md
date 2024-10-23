@@ -24,17 +24,14 @@ az aks show --name m01akscluster --resource-group matt_learn  --query oidcIssuer
 az acr login --name m01registry --resource-group matt_learn
 az acr repository delete --name m01registry --image workload-identity
 
+mvn clean -DskipTests package
 docker build -t m01registry.azurecr.io/workload-identity .
 docker push m01registry.azurecr.io/workload-identity
-
-https://eastasia.oic.prod-aks.azure.com/0044550f-19ec-4c35-9c61-994af34191fe/6fb7205b-48c0-43be-a9e0-228275e67bbb/
 
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  annotations:
-    azure.workload.identity/client-id: 726e2f44-b628-44c8-b726-720c29886427
   name: workload-identity-sa
   namespace: default
 EOF
