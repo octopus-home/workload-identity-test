@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -18,6 +20,8 @@ import java.util.Map;
 public class WebController {
     @Autowired
     private StringRedisTemplate template;
+    @Autowired
+    private RedissonClient redissonClient;
 
     @GetMapping("/hello")
     public String hello(String msg) {
@@ -52,4 +56,30 @@ public class WebController {
         }
         return mapper.writeValueAsString(envMap);
     }
+
+
+    @PostMapping("/redisson")
+    public String redisson(String key, String value) {
+        log.info("key:{}, value:{}", key, value);
+
+        RBucket<String> bucket = redissonClient.getBucket(key);
+        bucket.set(value);
+
+        System.out.println("Value of mykey: " + bucket.get());
+
+        return "success";
+    }
+
+    @GetMapping("/redissonGet")
+    public String redissonGet(String key) {
+        log.info("key:{}", key);
+
+        RBucket<String> bucket = redissonClient.getBucket(key);
+
+        System.out.println("Value of " + key + ": " + bucket.get());
+
+        return bucket.get();
+    }
+
+
 }

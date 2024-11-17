@@ -12,7 +12,7 @@ spring:
   cloud:
     azure:
       credential:
-        client-id: a61679a0-523b-407c-ab40-fc98c6664ba3
+        client-id: c8c406a9-bfdd-45d9-84af-df9dc55be555
 
 logging:
   level:
