@@ -11,7 +11,7 @@ After git clone this repo, <span style='color: red;'><b>change the MySQL passwor
 script
 ---
 ```
-az login --tenant 3b3079ee-db4e-4a06-8af0-a71bc0abb502
+az login --tenant 46d94fba-20cf-4c54-bc37-19ad68bb0dd5
 az account get-access-token --resource https://servicebus.azure.net
 
 az aks create --resource-group=matt_learn --name=m01akscluster --attach-acr m01registry --dns-name-prefix=m01aksclusterkubernetes --generate-ssh-keys
@@ -22,17 +22,17 @@ az aks show --name m01akscluster --resource-group matt_learn  --query oidcIssuer
 
 
 az acr login --name m01registry --resource-group matt_learn
-az acr repository delete --name m01registry --image workload-identity
+az acr repository delete --name m01registry --image demo
 
 mvn clean -DskipTests package
-docker build -t m01registry.azurecr.io/workload-identity .
-docker push m01registry.azurecr.io/workload-identity
+docker build -t m01registry.azurecr.io/demo .
+docker push m01registry.azurecr.io/demo
 
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: workload-identity-sa
+  name: demo-sa
   namespace: default
 EOF
 
@@ -41,22 +41,22 @@ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: workload-identity
+  name: demo
   namespace: default
   labels:
     azure.workload.identity/use: "true"
 spec:
-  serviceAccountName: workload-identity-sa
+  serviceAccountName: demo-sa
   containers:
-    - image: m01registry.azurecr.io/workload-identity
-      name: workload-identity
+    - image: m01registry.azurecr.io/demo
+      name: demo
 EOF
 
-kubectl expose pod workload-identity --type=LoadBalancer --port=80 --target-port=8080
+kubectl expose pod demo --type=LoadBalancer --port=80 --target-port=8080
 
-kubectl exec -it workload-identity --namespace=default -- /bin/bash
+kubectl exec -it demo --namespace=default -- /bin/bash
 
-"metadata":{"annotations":{},"labels":{"azure.workload.identity/use":"true"},"name":"workload-identity-spn","namespace":"default"}
+"metadata":{"annotations":{},"labels":{"azure.workload.identity/use":"true"},"name":"demo-spn","namespace":"default"}
 
 
 ```
@@ -65,15 +65,15 @@ other
 ### haven't use this time
 ``` azure
 
-kubectl run workload-identity-redis--image=m01registry.azurecr.io/workload-identity:v0
-kubectl run workload-identity-docker --image=m01registry.azurecr.io/workload-identity:v0
-kubectl expose pod workload-identity-docker --type=LoadBalancer --port=80 --target-port=8080
+kubectl run demo-redis--image=m01registry.azurecr.io/demo:v0
+kubectl run demo-docker --image=m01registry.azurecr.io/demo:v0
+kubectl expose pod demo-docker --type=LoadBalancer --port=80 --target-port=8080
 
-kubectl run workload-identity-credential --image=m01registry.azurecr.io/workload-identity-credential
-kubectl expose pod workload-identity-credential --type=LoadBalancer --port=80 --target-port=8080
+kubectl run demo-credential --image=m01registry.azurecr.io/demo-credential
+kubectl expose pod demo-credential --type=LoadBalancer --port=80 --target-port=8080
 
-kubectl run workload-identity-spn --image=m01registry.azurecr.io/workload-identity-spn --env="dbspn=726e2f44-b628-44c8-b726-720c29886427"
-kubectl patch pod workload-identity-spn -p '{"metadata":{"labels":{"azure.workload.identity/use":"true"}}}'
+kubectl run demo-spn --image=m01registry.azurecr.io/demo-spn --env="dbspn=726e2f44-b628-44c8-b726-720c29886427"
+kubectl patch pod demo-spn -p '{"metadata":{"labels":{"azure.workload.identity/use":"true"}}}'
 
 networkWatchers
 az group deployment list --resource-group NetworkWatcherRG --query "[?properties.targetResourceGroup=='NetworkWatcherRG'].{Name:name, Timestamp:properties.timestamp}"
@@ -82,17 +82,23 @@ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: workload-identity
+  name: demo
   namespace: default
   labels:
     azure.workload.identity/use: "true"
 spec:
-  serviceAccountName: workload-identity-sa
+  serviceAccountName: demo-sa
   containers:
-    - image: m01registry.azurecr.io/workload-identity
-      name: workload-identity
+    - image: m01registry.azurecr.io/demo
+      name: demo
       env:
       - name: AZURE_CLIENT_ID
         value: a61679a0-523b-407c-ab40-fc98c6664ba3
 EOF
 ```
+
+CREATE USER [m01app] FROM EXTERNAL PROVIDER;
+ALTER ROLE db_owner ADD MEMBER [m01app];
+
+CREATE USER [group1] FROM EXTERNAL PROVIDER;
+ALTER ROLE db_owner ADD MEMBER [group1];

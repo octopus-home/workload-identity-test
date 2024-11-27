@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.matt.demo</groupId>
-	<artifactId>workload-identity</artifactId>
+	<artifactId>widemo</artifactId>
 	<version>1.0</version>
-	<name>workload-identity</name>
+	<name>WI-demo</name>
 	<description>Demo project for Workload Identity</description>
 	<properties>
 		<java.version>17</java.version>

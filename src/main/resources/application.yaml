@@ -4,11 +4,11 @@ spring:
   cloud:
     azure:
       profile:
-        subscription-id: f7d9ba33-70f6-4106-bfc9-9db2c87691a0
-        tenant-id: 3b3079ee-db4e-4a06-8af0-a71bc0abb502
+#        subscription-id: 0f60b1d1-a69b-4a7e-899f-2a0a94b0610b
+        tenant-id: 46d94fba-20cf-4c54-bc37-19ad68bb0dd5
       credential:
-#        managed-identity-enabled: true #when start on local, need to omit this setting
-        client-id: a61679a0-523b-407c-ab40-fc98c6664ba3
+        managed-identity-enabled: true #when start on local, need to omit this setting
+        client-id: c8c406a9-bfdd-45d9-84af-df9dc55be555
       servicebus:
         namespace: m01servicebus
         resource:
@@ -35,7 +35,7 @@ spring:
               entity-type: queue
   
   datasource:
-    url: jdbc:sqlserver://m01azuresqlserver.database.windows.net:1433;database=m01database;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;Authentication=ActiveDirectoryDefault;user=a61679a0-523b-407c-ab40-fc98c6664ba3
+    url: jdbc:sqlserver://m01azuresqlserver.database.windows.net:1433;database=m01database;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;Authentication=ActiveDirectoryDefault;user=c8c406a9-bfdd-45d9-84af-df9dc55be555
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     database-platform: org.hibernate.dialect.SQLServerDialect
