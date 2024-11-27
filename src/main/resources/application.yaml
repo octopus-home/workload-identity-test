@@ -6,6 +6,7 @@ spring:
       profile:
         tenant-id: 46d94fba-20cf-4c54-bc37-19ad68bb0dd5
       credential:
+        managed-identity-enabled: true
         client-id: c8c406a9-bfdd-45d9-84af-df9dc55be555
       servicebus:
         namespace: m01servicebus
